@@ -1,8 +1,6 @@
 import json
 import datetime
 
-allData = []
-
 def handle_init_msg(msg):
     scope = msg[0]  #first char of msg
     msg = msg[1:].replace("'","\"")   #remove first char and correct quotes
@@ -14,13 +12,25 @@ def handle_init_msg(msg):
 
         with open(username+".json", "r") as rf:
             allData = json.load(rf)
-            config = allData["config"]
-            return config
+            return allData
 
-def handle_msg(msg):
-    '''msg = msg.replace("'","\"")   #correct quotes
-    data = json.loads(msg)'''
+def work(btnType, currentState, previousState):
+    toDo = ""
+    if btnType == "toggle":
+        newCurrentState = previousState
+        newPreviousState = currentState
+        toDo = newCurrentState
+    return toDo, newCurrentState, newPreviousState
 
+
+def handle_msg(msg, state, allData):
+    #msg = msg.replace("'","\"")   #correct quotes
+    data = json.loads(msg)
+    workData = allData["work"]
+    configData = allData["config"]
+
+    currentState = state["current"]
+    previousState = state["previous"]
     
     now = datetime.datetime.now()
     y = now.year
@@ -30,6 +40,15 @@ def handle_msg(msg):
     m = now.minute
     s = now.second
 
-    data = str(h)+":"+str(m)+":"+str(s)
+    toDo = currentState
+    if data[2] == 0:
+        btnType = workData[str(configData["in"][2])]["type"]
+        toDo, state["current"], state["previous"] = work(btnType, currentState, previousState)
+    
+    resp = "empty"
+    if toDo == "home":
+        resp = str(h)+":"+str(m)+":"+str(s)
+    elif toDo == "day":
+        resp = str(d)+"-"+str(M)+"-"+str(y)
 
-    return data
+    return resp, state

@@ -14,7 +14,14 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
 def handle_client(conn, addr):
+    global state
     print(f"[NEW CONNECTION] {addr} connected.")
+
+    allData = []
+    state = {
+        "current":"home",
+        "previous":"day"
+    }
 
     connected = True
     while connected:
@@ -24,13 +31,15 @@ def handle_client(conn, addr):
             msg = conn.recv(msg_length).decode(FORMAT)
             
             if msg[0] == "u":
-                send_msg = str(funcs.handle_init_msg(msg)).replace("'","\"")
+                allData = funcs.handle_init_msg(msg)
+                config = allData["config"]
+                send_msg = str(config)
                 print(send_msg)
             elif msg == DISCONNECT_MESSAGE:
                 connected = False
                 send_msg = "Goodbye"
             else:
-                send_msg = funcs.handle_msg(msg)
+                send_msg, state = funcs.handle_msg(msg, state, allData)
 
             print(f"[{addr}] {msg}")
             conn.send(send_msg.encode(FORMAT))
