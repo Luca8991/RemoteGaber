@@ -41,6 +41,7 @@ with open("user.json", "r") as read_file:
 user_name = user_info["username"]
 oled.fill(0)
 oled.text(user_name, 0, 0)
+oled.rotate(True)
 oled.show()
 
 send("u"+str(user_info))    # send user info to server
@@ -60,6 +61,7 @@ while True:
     time = client.recv(2048).decode(FORMAT)
     oled.fill(0)
     oled.text(time, 0, 10)
+    oled.rotate(True)
     oled.show()
     
     sleep(0.1)
