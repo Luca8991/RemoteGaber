@@ -18,6 +18,12 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 SERVER = "192.168.1.10"
 ADDR = (SERVER, PORT)
 
+oled.fill(0)
+oled.text("connecting to:", 0, 0)
+oled.text(SERVER, 0, 10)
+oled.rotate(True)
+oled.show()
+
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
@@ -64,6 +70,6 @@ while True:
     oled.rotate(True)
     oled.show()
     
-    sleep(0.1)
+    sleep(0.05)
 
 send(DISCONNECT_MESSAGE)
