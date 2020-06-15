@@ -103,7 +103,8 @@ class Gaber:
             script = getattr(self.scripts, toDo)
             resp = script()
         else:
-            
+            '''with open("./" + self.username + "/" + self.screens[toDo]["data"], "r") as r:
+                resp = str(r)'''
             resp = self.screens[toDo]["data"]
 
         self.updateState(toDo)

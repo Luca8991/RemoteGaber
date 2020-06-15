@@ -2,6 +2,7 @@ import socket
 import json
 import utime, machine, sh1106
 from time import sleep
+import framebuf
 
 i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 oled = sh1106.SH1106_I2C(128, 64, i2c, None, 0x3c)
@@ -27,9 +28,9 @@ oled.show()
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
-def receiveConfig(config):
-    config = json.loads(config.replace("'","\""))   #correct quotes and load into object
-    return config
+def receiveJSON(config):
+    j = json.loads(config.replace("'","\""))   #correct quotes and load into object
+    return j
 
 def send(msg):
     message = msg.encode(FORMAT)
@@ -52,7 +53,7 @@ oled.show()
 
 send("u"+str(user_info))    # send user info to server
 
-config = receiveConfig(client.recv(2048).decode(FORMAT))
+config = receiveJSON(client.recv(2048).decode(FORMAT))
 
 inPins = config["in"]
 outPins = config["out"]
@@ -64,12 +65,20 @@ while True:
         reads.append(val)
     send(str(reads))
 
-    time = client.recv(2048).decode(FORMAT)
+    resp = client.recv(2048).decode(FORMAT)
+    #print(resp, resp[1:])
     oled.fill(0)
-    oled.text(time, 0, 10)
+    if resp[0] == "t":
+        resp = receiveJSON(resp[1:])
+        oled.text(resp[0], resp[1], resp[2])
+    '''else:
+        data = bytearray(resp)
+        fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
+        #oled.invert(1)
+        oled.blit(fbuf,0,0)'''
+    
     oled.rotate(True)
     oled.show()
-    
     sleep(0.05)
 
 send(DISCONNECT_MESSAGE)
