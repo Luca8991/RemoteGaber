@@ -98,14 +98,16 @@ class Gaber:
     
     def doAction(self, toDo):
         action = self.actions[toDo]
+        actionType = action["type"]
+        actionDo = action["do"]
 
-        if action["type"] == "script":
-            script = getattr(self.scripts, toDo)
+        if actionType == "script":
+            script = getattr(self.scripts, actionDo)
             resp = script()
         else:
             '''with open("./" + self.username + "/" + self.screens[toDo]["data"], "r") as r:
                 resp = str(r)'''
-            resp = self.screens[toDo]["data"]
+            resp = self.screens[actionDo]["data"]
 
         self.updateState(toDo)
 
