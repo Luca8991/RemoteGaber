@@ -1,0 +1,72 @@
+{
+    "framework": {
+        "14": {
+            "actionType": "open",
+            "actions": [
+                {
+                    "current": "home",
+                    "action": "day"
+                },
+                {
+                    "current": "day",
+                    "action": "home"
+                }
+            ]
+        },
+
+        "12": {
+            "actionType": "open",
+            "actions": [
+                {
+                    "current": "home",
+                    "action": "up"
+                },
+                {
+                    "current": "down",
+                    "action": "up"
+                },
+                {
+                    "current": "up",
+                    "action": "home"
+                }
+            ]
+        },
+
+        "13": {
+            "actionType": "open",
+            "actions": [
+                {
+                    "current": "home",
+                    "action": "down"
+                },
+                {
+                    "current": "up",
+                    "action": "down"
+                },
+                {
+                    "current": "down",
+                    "action": "home"
+                }
+            ]
+        }
+    },
+
+    "actions": {
+        "home": {
+            "type": "script",
+            "do": "home"
+        },
+        "day":{
+            "type": "script",
+            "do": "day"
+        },
+        "up":{
+            "type": "screen",
+            "do": "up"
+        },
+        "down":{
+            "type": "screen",
+            "do": "down"
+        }
+    }
+}

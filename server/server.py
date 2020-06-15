@@ -1,6 +1,7 @@
 import socket 
 import threading
-import funcs
+
+from gaber import Gaber
 
 HEADER = 64
 PORT = 50500
@@ -14,14 +15,9 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
 def handle_client(conn, addr):
-    global state
     print(f"[NEW CONNECTION] {addr} connected.")
 
-    allData = []
-    state = {
-        "current":"home",
-        "previous":"day"
-    }
+    gaber = Gaber()
 
     connected = True
     while connected:
@@ -29,19 +25,21 @@ def handle_client(conn, addr):
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
-            
+
+            print(f"[{addr}] {msg}")
+
             if msg[0] == "u":
-                allData = funcs.handle_init_msg(msg)
-                config = allData["config"]
+                gaber.setUser(msg)
+                config = gaber.getUserConfig()
                 send_msg = str(config)
-                print(send_msg)
+                #print(send_msg)
             elif msg == DISCONNECT_MESSAGE:
                 connected = False
                 send_msg = "Goodbye"
             else:
-                send_msg, state = funcs.handle_msg(msg, state, allData)
+                send_msg = gaber.respond(msg)
 
-            print(f"[{addr}] {msg}")
+            
             conn.send(send_msg.encode(FORMAT))
 
     conn.close()
