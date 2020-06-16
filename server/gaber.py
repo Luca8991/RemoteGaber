@@ -21,6 +21,8 @@ class Gaber:
             "previous": "app"
         }
 
+        self.memory = {}
+
     #-------------------#
     ####### USER ########
     #-------------------#
@@ -81,38 +83,37 @@ class Gaber:
         return resp
 
     def handleButton(self, btn):
-        btnAction = btn["actionType"]
+        actions = btn["actions"]
 
-        if btnAction == "open":
-            currentState = self.state["current"]
+        currentState = self.state["current"]
 
-            actions = btn["actions"]
-
-            for a in actions:
-                #print(a)
-                if "current" in a:
-                    if a["current"] == currentState:
-                        return a["action"]
-                else:
-                    return a["default"]
-
+        for a in actions:
+            #print(a)
+            if "current" in a:
+                if a["current"] == currentState:
+                    return a["action"]
+            else:
+                return a["default"]
+    
     def updateState(self, newState):
         self.state["previous"] = self.state["current"]
         self.state["current"] = newState
     
     def doAction(self, toDo):
         action = self.actions[toDo]
+        actionMode = action["mode"]
         actionType = action["type"]
         actionDo = action["do"]
 
-        if actionType == "script":
+        if actionMode == "script":
             script = getattr(self.scripts, actionDo)
-            resp = script()
-        else:
+            resp = script(self.memory)
+        elif actionMode == "screen":
             '''with open("./" + self.username + "/" + self.screens[toDo]["data"], "r") as r:
                 resp = str(r)'''
             resp = self.screens[actionDo]["data"]
 
-        self.updateState(toDo)
+        if actionType == "change-state":
+            self.updateState(toDo)
 
         return resp

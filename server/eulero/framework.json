@@ -1,10 +1,9 @@
 {
     "framework": {
         "14": {
-            "actionType": "open",
             "actions": [
                 {
-                    "current": "day",
+                    "current": "counter",
                     "action": "home"
                 },
                 {
@@ -16,17 +15,20 @@
                     "action": "home"
                 },
                 {
-                    "default": "day"
+                    "default": "counter"
                 }
             ]
         },
 
         "12": {
-            "actionType": "open",
             "actions": [
                 {
                     "current": "up",
                     "action": "home"
+                },
+                {
+                    "current": "counter",
+                    "action": "counterUp"
                 },
                 {
                     "default": "up"
@@ -35,11 +37,14 @@
         },
 
         "13": {
-            "actionType": "open",
             "actions": [
                 {
                     "current": "down",
                     "action": "home"
+                },
+                {
+                    "current": "counter",
+                    "action": "counterDown"
                 },
                 {
                     "default": "down"
@@ -50,20 +55,34 @@
 
     "actions": {
         "home": {
-            "type": "script",
+            "mode": "script",
+            "type": "change-state",
             "do": "home"
         },
-        "day":{
-            "type": "script",
-            "do": "day"
+        "counter":{
+            "mode": "script",
+            "type": "change-state",
+            "do": "counter"
         },
         "up":{
-            "type": "screen",
+            "mode": "screen",
+            "type": "change-state",
             "do": "up"
         },
         "down":{
-            "type": "screen",
+            "mode": "screen",
+            "type": "change-state",
             "do": "down"
+        },
+        "counterDown":{
+            "mode": "script",
+            "type": "execute",
+            "do": "counterDown"
+        },
+        "counterUp":{
+            "mode": "script",
+            "type": "execute",
+            "do": "counterUp"
         }
     }
 }
