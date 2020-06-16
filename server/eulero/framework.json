@@ -1,6 +1,7 @@
 {
     "framework": {
         "14": {
+            "name": "wheel-select",
             "actions": [
                 {
                     "current": "counter",
@@ -21,6 +22,7 @@
         },
 
         "12": {
+            "name": "wheel-up",
             "actions": [
                 {
                     "current": "up",
@@ -37,6 +39,7 @@
         },
 
         "13": {
+            "name": "wheel-down",
             "actions": [
                 {
                     "current": "down",
