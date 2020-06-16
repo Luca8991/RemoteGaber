@@ -89,8 +89,12 @@ class Gaber:
             actions = btn["actions"]
 
             for a in actions:
-                if a["current"] == currentState:
-                    return a["action"]
+                #print(a)
+                if "current" in a:
+                    if a["current"] == currentState:
+                        return a["action"]
+                else:
+                    return a["default"]
 
     def updateState(self, newState):
         self.state["previous"] = self.state["current"]

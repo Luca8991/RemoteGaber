@@ -4,12 +4,19 @@
             "actionType": "open",
             "actions": [
                 {
-                    "current": "home",
-                    "action": "day"
-                },
-                {
                     "current": "day",
                     "action": "home"
+                },
+                {
+                    "current": "up",
+                    "action": "home"
+                },
+                {
+                    "current": "down",
+                    "action": "home"
+                },
+                {
+                    "default": "day"
                 }
             ]
         },
@@ -18,16 +25,11 @@
             "actionType": "open",
             "actions": [
                 {
-                    "current": "home",
-                    "action": "up"
-                },
-                {
-                    "current": "down",
-                    "action": "up"
-                },
-                {
                     "current": "up",
                     "action": "home"
+                },
+                {
+                    "default": "up"
                 }
             ]
         },
@@ -36,16 +38,11 @@
             "actionType": "open",
             "actions": [
                 {
-                    "current": "home",
-                    "action": "down"
-                },
-                {
-                    "current": "up",
-                    "action": "down"
-                },
-                {
                     "current": "down",
                     "action": "home"
+                },
+                {
+                    "default": "down"
                 }
             ]
         }
