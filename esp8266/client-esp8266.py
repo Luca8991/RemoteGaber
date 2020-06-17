@@ -87,20 +87,28 @@ while True:
 
     r = recv_msg(client)
     #print(resp, resp[1:])
-    oled.fill(0)
 
     firstChar = chr(r[0])
     
     if firstChar == "t":
         resp = r.decode(FORMAT)
         resp = receiveJSON(resp[1:])
+        oled.fill(0)
         oled.text(resp[0], resp[1], resp[2])
+    elif firstChar == "p":
+        resp = r.decode(FORMAT)
+        resp = receiveJSON(resp[1:])
+        for i in (0, len(resp)-1):
+            pinNumber = outPins[i]
+            pinValue = resp[i]
+            machine.Pin(pinNumber, machine.Pin.OUT).value(not pinValue)
     else:
         #print(r)
         data = bytearray(r)
         #print(len(data))
         fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
         #oled.invert(1)
+        oled.fill(0)
         oled.blit(fbuf,0,0)
     
     oled.rotate(True)

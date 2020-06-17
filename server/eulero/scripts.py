@@ -60,3 +60,33 @@ def counterDown(memory):
     resp = [str(counterMem["count"]), 60, 28]
 
     return "t"+str(resp)
+
+def torchOn(memory):
+
+    memory["torch"]["state"] = 1
+
+    resp = [1]
+    return "p"+str(resp)
+
+def torchOff(memory):
+
+    memory["torch"]["state"] = 0
+
+    resp = [0]
+    return "p"+str(resp)
+
+def openTorch(memory):
+    if "torch" not in memory:
+        memory["torch"] = {
+            "state": 0
+        }
+    
+    torchState = memory["torch"]["state"]
+
+    text = "OFF"
+    if torchState == 1:
+        text = "ON"
+    
+    resp = ["Torch is "+text, 10, 27]
+
+    return "t"+str(resp)

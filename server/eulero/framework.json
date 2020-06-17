@@ -4,7 +4,7 @@
             "name": "wheel-select",
             "actions": [
                 {
-                    "current": "counter",
+                    "current": "torch",
                     "action": "home"
                 },
                 {
@@ -16,7 +16,7 @@
                     "action": "home"
                 },
                 {
-                    "default": "counter"
+                    "default": "torch"
                 }
             ]
         },
@@ -29,8 +29,8 @@
                     "action": "home"
                 },
                 {
-                    "current": "counter",
-                    "action": "counterUp"
+                    "current": "torch",
+                    "action": "torchOn"
                 },
                 {
                     "default": "up"
@@ -46,8 +46,8 @@
                     "action": "home"
                 },
                 {
-                    "current": "counter",
-                    "action": "counterDown"
+                    "current": "torch",
+                    "action": "torchOff"
                 },
                 {
                     "default": "down"
@@ -62,10 +62,10 @@
             "type": "change-state",
             "do": "home"
         },
-        "counter":{
+        "torch":{
             "mode": "script",
             "type": "change-state",
-            "do": "counter"
+            "do": "openTorch"
         },
         "up":{
             "mode": "screen",
@@ -76,6 +76,16 @@
             "mode": "text",
             "type": "change-state",
             "do": "down"
+        },
+        "torchOn": {
+            "mode": "script",
+            "type": "execute",
+            "do": "torchOn"
+        },
+        "torchOff": {
+            "mode": "script",
+            "type": "execute",
+            "do": "torchOff"
         },
         "counterDown":{
             "mode": "script",
