@@ -1,5 +1,6 @@
 import socket 
 import threading
+import struct
 
 from gaber import Gaber
 
@@ -13,6 +14,11 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
+
+def send(sock, msg):
+    # Prefix each message with a 4-byte length (network byte order)
+    msg = struct.pack('>I', len(msg)) + msg
+    sock.sendall(msg)
 
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
@@ -39,8 +45,11 @@ def handle_client(conn, addr):
             else:
                 send_msg = gaber.respond(msg)
 
-            
-            conn.send(send_msg.encode(FORMAT))
+            if type(send_msg) is str:
+                send_msg = send_msg.encode(FORMAT)
+            #print(send_msg)
+            #print(conn.send(send_msg), "bytes sent")
+            send(conn, send_msg)
 
     conn.close()
         

@@ -1,5 +1,7 @@
 import socket
 import json
+import struct
+
 import utime, machine, sh1106
 from time import sleep
 import framebuf
@@ -41,6 +43,24 @@ def send(msg):
     client.send(send_length)
     client.send(message)
 
+def recv_msg(sock):
+    # Read message length and unpack it into an integer
+    raw_msglen = recvall(sock, 4)
+    if not raw_msglen:
+        return None
+    msglen = struct.unpack('>I', raw_msglen)[0]
+    # Read the message data
+    return recvall(sock, msglen)
+
+def recvall(sock, n):
+    # Helper function to recv n bytes or return None if EOF is hit
+    data = bytearray()
+    while len(data) < n:
+        packet = sock.recv(n - len(data))
+        if not packet:
+            return None
+        data.extend(packet)
+    return data
 
 with open("user.json", "r") as read_file:
     user_info = json.load(read_file)
@@ -53,7 +73,7 @@ oled.show()
 
 send("u"+str(user_info))    # send user info to server
 
-config = receiveJSON(client.recv(2048).decode(FORMAT))
+config = receiveJSON(recv_msg(client).decode(FORMAT))
 
 inPins = config["in"]
 outPins = config["out"]
@@ -65,17 +85,23 @@ while True:
         reads.append(val)
     send(str(reads))
 
-    resp = client.recv(2048).decode(FORMAT)
+    r = recv_msg(client)
     #print(resp, resp[1:])
     oled.fill(0)
-    if resp[0] == "t":
+
+    firstChar = chr(r[0])
+    
+    if firstChar == "t":
+        resp = r.decode(FORMAT)
         resp = receiveJSON(resp[1:])
         oled.text(resp[0], resp[1], resp[2])
-    '''else:
-        data = bytearray(resp)
+    else:
+        #print(r)
+        data = bytearray(r)
+        #print(len(data))
         fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
         #oled.invert(1)
-        oled.blit(fbuf,0,0)'''
+        oled.blit(fbuf,0,0)
     
     oled.rotate(True)
     oled.show()

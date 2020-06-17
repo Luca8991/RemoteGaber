@@ -73,7 +73,7 @@
             "do": "up"
         },
         "down":{
-            "mode": "screen",
+            "mode": "text",
             "type": "change-state",
             "do": "down"
         },

@@ -108,10 +108,13 @@ class Gaber:
         if actionMode == "script":
             script = getattr(self.scripts, actionDo)
             resp = script(self.memory)
-        elif actionMode == "screen":
-            '''with open("./" + self.username + "/" + self.screens[toDo]["data"], "r") as r:
-                resp = str(r)'''
+        elif actionMode == "text":
             resp = self.screens[actionDo]["data"]
+        elif actionMode == "screen":
+            with open("./" + self.username + "/" + self.screens[toDo]["data"], "r") as r:
+                data = r.read().replace('\n', '')
+                resp = bytes.fromhex(data)
+            #resp = self.screens[actionDo]["data"]
 
         if actionType == "change-state":
             self.updateState(toDo)
