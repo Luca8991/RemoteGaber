@@ -126,6 +126,6 @@ while True:
     
     oled.rotate(True)
     oled.show()
-    sleep(0.05)
+    sleep(0.01)
 
 send(DISCONNECT_MESSAGE)
