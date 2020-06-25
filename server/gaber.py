@@ -18,7 +18,7 @@ class Gaber:
         
         self.state = {
             "current": "home",
-            "previous": "app"
+            "previous": ""
         }
 
         self.memory = {}
@@ -111,7 +111,7 @@ class Gaber:
         elif actionMode == "text":
             resp = self.screens[actionDo]["data"]
         elif actionMode == "screen":
-            with open("./" + self.username + "/" + self.screens[toDo]["data"], "r") as r:
+            with open("./" + self.username + "/" + self.screens[actionDo]["data"], "r") as r:
                 data = r.read().replace('\n', '')
                 resp = bytes.fromhex(data)
             #resp = self.screens[actionDo]["data"]
