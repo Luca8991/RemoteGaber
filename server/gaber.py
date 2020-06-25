@@ -18,7 +18,7 @@ class Gaber:
         
         self.state = {
             "current": "home",
-            "previous": ""
+            "previous": "home"
         }
 
         self.memory = {}
@@ -95,28 +95,39 @@ class Gaber:
             else:
                 return a["default"]
     
-    def updateState(self, newState):
-        self.state["previous"] = self.state["current"]
-        self.state["current"] = newState
+    def updateState(self, newState, saveState):
+        if self.state["current"] is not newState:
+            if saveState:
+                self.state["previous"] = self.state["current"]
+            
+            self.state["current"] = newState
     
     def doAction(self, toDo):
+        print("todo: ", toDo, "previous: ", self.state["previous"])
+        if toDo == "BACK":
+            toDo = self.state["previous"]
+        
         action = self.actions[toDo]
         actionMode = action["mode"]
         actionType = action["type"]
+        '''if toDo == "BACK" and actionType == "save-state":
+            actionType = "change-state"'''
         actionDo = action["do"]
 
         if actionMode == "script":
             script = getattr(self.scripts, actionDo)
             resp = script(self.memory)
         elif actionMode == "text":
-            resp = self.screens[actionDo]["data"]
+            resp = "t"+self.screens[actionDo]["data"]
         elif actionMode == "screen":
             with open("./" + self.username + "/" + self.screens[actionDo]["data"], "r") as r:
                 data = r.read().replace('\n', '')
                 resp = bytes.fromhex(data)
             #resp = self.screens[actionDo]["data"]
 
-        if actionType == "change-state":
-            self.updateState(toDo)
+        if actionType == "save-state":
+            self.updateState(toDo, True)
+        elif actionType == "change-state":
+            self.updateState(toDo, False)
 
         return resp

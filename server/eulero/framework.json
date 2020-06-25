@@ -4,19 +4,23 @@
             "name": "wheel-select",
             "actions": [
                 {
-                    "current": "torch",
-                    "action": "home"
-                },
-                {
                     "current": "up",
-                    "action": "home"
+                    "action": "torch"
                 },
                 {
                     "current": "down",
+                    "action": "counter"
+                },
+                {
+                    "current": "home",
+                    "action": "day"
+                },
+                {
+                    "current": "day",
                     "action": "home"
                 },
                 {
-                    "default": "torch"
+                    "default": "BACK"
                 }
             ]
         },
@@ -25,12 +29,16 @@
             "name": "wheel-up",
             "actions": [
                 {
-                    "current": "up",
-                    "action": "home"
+                    "current": "down",
+                    "action": "BACK"
                 },
                 {
                     "current": "torch",
                     "action": "torchOn"
+                },
+                {
+                    "current": "counter",
+                    "action": "counterUp"
                 },
                 {
                     "default": "up"
@@ -42,12 +50,16 @@
             "name": "wheel-down",
             "actions": [
                 {
-                    "current": "down",
-                    "action": "home"
+                    "current": "up",
+                    "action": "BACK"
                 },
                 {
                     "current": "torch",
                     "action": "torchOff"
+                },
+                {
+                    "current": "counter",
+                    "action": "counterDown"
                 },
                 {
                     "default": "down"
@@ -59,8 +71,13 @@
     "actions": {
         "home": {
             "mode": "script",
-            "type": "change-state",
-            "do": "home"
+            "type": "save-state",
+            "do": "time"
+        },
+        "day": {
+            "mode": "script",
+            "type": "save-state",
+            "do": "day"
         },
         "torch":{
             "mode": "script",
@@ -68,13 +85,13 @@
             "do": "openTorch"
         },
         "up":{
-            "mode": "screen",
-            "type": "change-state",
+            "mode": "text",
+            "type": "save-state",
             "do": "up"
         },
         "down":{
             "mode": "text",
-            "type": "change-state",
+            "type": "save-state",
             "do": "down"
         },
         "torchOn": {
@@ -86,6 +103,11 @@
             "mode": "script",
             "type": "execute",
             "do": "torchOff"
+        },
+        "counter":{
+            "mode": "script",
+            "type": "change-state",
+            "do": "openCounter"
         },
         "counterDown":{
             "mode": "script",

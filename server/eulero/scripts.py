@@ -1,7 +1,7 @@
 import json
 import datetime
 
-def home(memory):
+def time(memory):
     now = datetime.datetime.now()
     h = now.hour
     m = now.minute
@@ -9,7 +9,7 @@ def home(memory):
 
     time = "{:02d}".format(h)+":"+"{:02d}".format(m)+":"+"{:02d}".format(s)
 
-    resp = [time, 30, 27]
+    resp = [time, 32, 28]
 
     return "t"+str(resp)
 
@@ -19,13 +19,13 @@ def day(memory):
     M = now.month
     d = now.day
 
-    time = "{:02d}".format(d)+" - "+"{:02d}".format(M)+" - "+str(y)
+    time = "{:02d}".format(d)+"/"+"{:02d}".format(M)+"/"+str(y)
 
-    resp = [time, 7, 27]
+    resp = [time, 24, 28]
 
     return "t"+str(resp)
 
-def counter(memory):
+def openCounter(memory):
     if "counter" not in memory:
         memory["counter"] = {
             "count": 0
