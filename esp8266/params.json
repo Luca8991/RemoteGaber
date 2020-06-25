@@ -1,0 +1,14 @@
+{
+    "config": {
+        "headerSize": 64,
+        "ipAddress": "0.0.0.0",
+        "address": "your.domain.net",
+        "port": 50500,
+        "encodingFormat": "utf-8",
+        "byeMessage": "!DISCONNECT"
+    },
+    "wifi": {
+        "ssid": "<your-ssid>",
+        "password": "<your-password>"
+    }
+}

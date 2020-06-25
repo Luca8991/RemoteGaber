@@ -1,0 +1,9 @@
+{
+    "config": {
+        "headerSize": 64,
+        "ipAddress": "192.168.0.2",
+        "port": 50500,
+        "encodingFormat": "utf-8",
+        "byeMessage": "!DISCONNECT"
+    }
+}

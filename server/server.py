@@ -1,16 +1,27 @@
 import socket 
 import threading
 import struct
+import json
 
 from gaber import Gaber
 
 HEADER = 64
 PORT = 50500
 #SERVER = socket.gethostbyname(socket.gethostname())
-SERVER = "192.168.1.10"
-ADDR = (SERVER, PORT)
+SERVER = "0.0.0.0"
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
+
+with open("params.json", "r") as r:
+    params = json.load(r)
+
+    HEADER = params["config"]["headerSize"]
+    SERVER = params["config"]["ipAddress"]
+    PORT = params["config"]["port"]
+    FORMAT = params["config"]["encodingFormat"]
+    DISCONNECT_MESSAGE = params["config"]["byeMessage"]
+
+ADDR = (SERVER, PORT)
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)

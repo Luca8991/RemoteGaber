@@ -13,12 +13,25 @@ HEADER = 64
 PORT = 50500
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
+SERVER = "0.0.0.0"
 
-# getaddrinfo is returning something like:
-# [(x, y, z, '', ('<IPADDRESS>', PORT))]
-# we can access the ip address with index [0][-1][0]
-#SERVER = socket.getaddrinfo("lucab.ddns.net",PORT)[0][-1][0]
-SERVER = "192.168.1.10"
+with open("params.json", "r") as r:
+    params = json.load(r)
+
+    HEADER = params["config"]["headerSize"]
+
+    if "ipAddress" in params["config"]:
+        SERVER = params["config"]["ipAddress"]
+    elif "address":
+        # getaddrinfo returns:
+        # [(x, y, z, '', ('<IPADDRESS>', PORT))]
+        # we can get the ip address with this index: [0][-1][0]
+        SERVER = socket.getaddrinfo(params["config"]["address"],PORT)[0][-1][0]
+    
+    PORT = params["config"]["port"]
+    FORMAT = params["config"]["encodingFormat"]
+    DISCONNECT_MESSAGE = params["config"]["byeMessage"]
+
 ADDR = (SERVER, PORT)
 
 oled.fill(0)

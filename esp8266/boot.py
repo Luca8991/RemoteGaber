@@ -10,14 +10,22 @@ gc.collect()
 
 import network
 
+import json
+
 i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 oled = sh1106.SH1106_I2C(128, 64, i2c, None, 0x3c)
 
 SSID = "<your-ssid>"
 PWD = "<your-pwd>"
 
+with open("params.json", "r") as r:
+    params = json.load(r)
+
+    SSID = params["wifi"]["ssid"]
+    PWD = params["wifi"]["password"]
+
 oled.fill(0)
-oled.text("connecting to wifi network:", 0, 0)
+oled.text("connecting to:", 0, 0)
 oled.text(SSID, 0, 10)
 oled.rotate(True)
 oled.show()
@@ -25,7 +33,7 @@ oled.show()
 def do_connect():
     sta_if = network.WLAN(network.STA_IF)
     if not sta_if.isconnected():
-        print('connecting to network...')
+        print('connecting to:')
         sta_if.active(True)
         sta_if.connect(SSID, PWD)
         while not sta_if.isconnected():
