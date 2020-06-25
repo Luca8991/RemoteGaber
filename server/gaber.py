@@ -103,7 +103,7 @@ class Gaber:
             self.state["current"] = newState
     
     def doAction(self, toDo):
-        print("todo: ", toDo, "previous: ", self.state["previous"])
+        #print("todo: ", toDo, "previous: ", self.state["previous"])
         if toDo == "BACK":
             toDo = self.state["previous"]
         
