@@ -85,12 +85,12 @@
             "do": "openTorch"
         },
         "up":{
-            "mode": "text",
+            "mode": "script",
             "type": "save-state",
             "do": "up"
         },
         "down":{
-            "mode": "text",
+            "mode": "script",
             "type": "save-state",
             "do": "down"
         },

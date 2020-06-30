@@ -37,6 +37,19 @@ def handle_client(conn, addr):
     gaber = Gaber()
 
     connected = True
+
+    msg_length = conn.recv(HEADER).decode(FORMAT)
+    if msg_length:
+        msg_length = int(msg_length)
+        msg = conn.recv(msg_length).decode(FORMAT)
+
+        print(f"[{addr}] {msg}")
+
+        gaber.setUser(msg)
+        config = gaber.getUserConfig()
+        send_msg = str(config).encode(FORMAT)
+        send(conn, send_msg)
+
     while connected:
         msg_length = conn.recv(HEADER).decode(FORMAT)
         if msg_length:
@@ -45,22 +58,13 @@ def handle_client(conn, addr):
 
             print(f"[{addr}] {msg}")
 
-            if msg[0] == "u":
-                gaber.setUser(msg)
-                config = gaber.getUserConfig()
-                send_msg = str(config)
-                #print(send_msg)
-            elif msg == DISCONNECT_MESSAGE:
+            if msg == DISCONNECT_MESSAGE:
                 connected = False
-                send_msg = "Goodbye"
+                '''send_msg = "Goodbye".encode(FORMAT)
+                send(conn, send_msg)'''
             else:
                 send_msg = gaber.respond(msg)
-
-            if type(send_msg) is str:
-                send_msg = send_msg.encode(FORMAT)
-            #print(send_msg)
-            #print(conn.send(send_msg), "bytes sent")
-            send(conn, send_msg)
+                send(conn, send_msg)
 
     conn.close()
         

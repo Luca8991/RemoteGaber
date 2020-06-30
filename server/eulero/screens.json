@@ -1,9 +1,13 @@
 {
     "up": {
-        "data": "['TORCH', 44, 28]"
+        "text": ["TORCH", 44, 28],
+        "pins": [],
+        "screen": ""
     },
     "down": {
-        "data": "['COUNTER', 36, 28]"
+        "text": ["COUNTER", 36, 28],
+        "pins": [],
+        "screen": ""
     },
     "up1": {
         "data": "test.txt"

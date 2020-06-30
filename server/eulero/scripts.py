@@ -1,31 +1,97 @@
 import json
 import datetime
+import math
 
-def time(memory):
+def drawLine(cx, cy, r, angle):
+    
+    sx = cx
+    sy = cy - r + 2
+
+    if angle == 30:
+        sx = cx
+        sy = cy + r - 2
+
+    if angle > 0:
+        rad = (angle/30) * math.pi - math.pi/2
+        m = math.tan( rad )
+        if angle < 30:
+            sx = int( r / math.sqrt(1+math.pow(m,2)) ) + cx
+            sy = int(  m*(sx-cx) ) + cy
+        elif angle > 30:
+            sx = -int( r / math.sqrt(1+math.pow(m,2)) ) + cx
+            sy = int(  m*(sx-cx) ) + cy
+
+    return sx, sy
+
+def time(memory, screenBf, pinState):
     now = datetime.datetime.now()
     h = now.hour
     m = now.minute
     s = now.second
 
-    time = "{:02d}".format(h)+":"+"{:02d}".format(m)+":"+"{:02d}".format(s)
+    screenBf.fill(0)
 
-    resp = [time, 32, 28]
+    cx = int(screenBf.width/2)
+    cy = int(screenBf.height/2)
+    r = int(screenBf.height/2)
 
-    return "t"+str(resp)
+    screenBf.circle(cx, cy, r, True)
+    screenBf.circle(cx, cy, r-1, True)
 
-def day(memory):
+    sx, sy = drawLine(cx, cy, r, s)
+    screenBf.line(cx, cy, sx, sy, True)
+
+    mx, my = drawLine(cx, cy, r-6, m)
+    screenBf.line(cx, cy, mx, my, True)
+
+    hx, hy = drawLine(cx, cy, r-12, (h/24)*60)
+    screenBf.line(cx, cy, hx, hy, True)
+
+def day(memory, screenBf, pinState):
     now = datetime.datetime.now()
-    y = now.year
-    M = now.month
-    d = now.day
 
-    time = "{:02d}".format(d)+"/"+"{:02d}".format(M)+"/"+str(y)
+    time = now.strftime("%X")
 
-    resp = [time, 24, 28]
+    screenBf.fill(0)
 
-    return "t"+str(resp)
+    screenBf.text(time, 16, 18, True, size=2)
 
-def openCounter(memory):
+    date = now.strftime("%a, %b %d %Y")
+
+    screenBf.text(date, 16, 45, True, size=1)
+
+'''def scrollUp(memory, screenBf, pinState):
+    screenBf.scroll(0, -3)
+
+def scrollDown(memory, screenBf, pinState):
+    screenBf.scroll(0, 3)'''
+
+def up(memory, screenBf, pinState):
+    screenBf.fill(0)
+    screenBf.text("TORCH", 32, 24, True, size=2)
+
+def down(memory, screenBf, pinState):
+    screenBf.fill(0)
+    screenBf.text("COUNTER", 24, 24, True, size=2)
+
+def showCount(count, screenBf):
+    screenBf.fill(0)
+    screenBf.text("Count:", 46, 16, True, size=1)
+
+    x = 0
+    y = 32
+    if count >= 0 and count < 10:
+        x = 59
+    elif count < 0 and count > -10:
+        x = 54
+    elif count > 10 :
+        x = 54
+    elif count < -10:
+        x = 49
+    
+    screenBf.text(str(count), x, y, True, size=2)
+
+def openCounter(memory, screenBf, pinState):
     if "counter" not in memory:
         memory["counter"] = {
             "count": 0
@@ -33,11 +99,11 @@ def openCounter(memory):
     
     counterMem = memory["counter"]
 
-    resp = [str(counterMem["count"]), 60, 28]
+    count = counterMem["count"]
 
-    return "t"+str(resp)
+    showCount(count, screenBf)
 
-def counterUp(memory):
+def counterUp(memory, screenBf, pinState):
     
     counterMem = memory["counter"]
 
@@ -45,11 +111,9 @@ def counterUp(memory):
 
     memory["counter"] = counterMem
 
-    resp = [str(counterMem["count"]), 60, 28]
+    showCount(counterMem["count"], screenBf)
 
-    return "t"+str(resp)
-
-def counterDown(memory):
+def counterDown(memory, screenBf, pinState):
 
     counterMem = memory["counter"]
 
@@ -57,25 +121,36 @@ def counterDown(memory):
 
     memory["counter"] = counterMem
 
-    resp = [str(counterMem["count"]), 60, 28]
+    showCount(counterMem["count"], screenBf)
 
-    return "t"+str(resp)
+def showTorch(torchState, screenBf):
+    text = "OFF"
+    x = 48
+    if torchState == 1:
+        text = "ON"
+        x = 52
 
-def torchOn(memory):
+    screenBf.fill(0)
+    screenBf.text("Torch is:", 36, 16, True, size=1)
+    screenBf.text(text, x, 32, True, size=2)
+
+def torchOn(memory, screenBf, pinState):
 
     memory["torch"]["state"] = 1
 
-    resp = [1]
-    return "p"+str(resp)
+    pinState[0] = 1
 
-def torchOff(memory):
+    showTorch(1, screenBf)
+
+def torchOff(memory, screenBf, pinState):
 
     memory["torch"]["state"] = 0
 
-    resp = [0]
-    return "p"+str(resp)
+    pinState[0] = 0
 
-def openTorch(memory):
+    showTorch(0, screenBf)
+
+def openTorch(memory, screenBf, pinState):
     if "torch" not in memory:
         memory["torch"] = {
             "state": 0
@@ -83,10 +158,4 @@ def openTorch(memory):
     
     torchState = memory["torch"]["state"]
 
-    text = "OFF"
-    if torchState == 1:
-        text = "ON"
-    
-    resp = ["Torch is "+text, 10, 27]
-
-    return "t"+str(resp)
+    showTorch(torchState, screenBf)

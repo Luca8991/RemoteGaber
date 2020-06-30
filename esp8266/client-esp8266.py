@@ -2,12 +2,13 @@ import socket
 import json
 import struct
 
-import utime, machine, sh1106
 from time import sleep
-import framebuf
+from framebuf import FrameBuffer, MONO_VLSB
+from machine import I2C, Pin
+from sh1106 import SH1106_I2C
 
-i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
-oled = sh1106.SH1106_I2C(128, 64, i2c, None, 0x3c)
+i2c = I2C(scl=Pin(4), sda=Pin(5))
+oled = SH1106_I2C(128, 64, i2c, None, 0x3c)
 
 HEADER = 64
 PORT = 50500
@@ -43,9 +44,8 @@ oled.show()
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
-def receiveJSON(config):
-    j = json.loads(config.replace("'","\""))   #correct quotes and load into object
-    return j
+def receiveJSON(data):
+    return json.loads(data.replace("'","\""))   #correct quotes and load into object
 
 def send(msg):
     message = msg.encode(FORMAT)
@@ -69,10 +69,14 @@ def recvall(sock, n):
     # Helper function to recv n bytes or return None if EOF is hit
     data = bytearray()
     while len(data) < n:
-        packet = sock.recv(n - len(data))
-        if not packet:
-            return None
-        data.extend(packet)
+        try:
+            sock.settimeout(0.01)
+            packet = sock.recv(n - len(data))
+            if not packet:
+                return None
+            data.extend(packet)
+        except:
+            pass
     return data
 
 with open("user.json", "r") as read_file:
@@ -84,7 +88,7 @@ oled.text(user_name, 0, 0)
 oled.rotate(True)
 oled.show()
 
-send("u"+str(user_info))    # send user info to server
+send(str(user_info))    # send user info to server
 
 config = receiveJSON(recv_msg(client).decode(FORMAT))
 
@@ -94,38 +98,24 @@ outPins = config["out"]
 while True:
     reads = []
     for pin in inPins:
-        val = machine.Pin(pin, machine.Pin.IN, machine.Pin.PULL_UP).value()
+        val = Pin(pin, Pin.IN, Pin.PULL_UP).value()
         reads.append(val)
     send(str(reads))
-
-    r = recv_msg(client)
-    #print(resp, resp[1:])
-
-    firstChar = chr(r[0])
     
-    if firstChar == "t":
-        resp = r.decode(FORMAT)
-        resp = receiveJSON(resp[1:])
-        oled.fill(0)
-        oled.text(resp[0], resp[1], resp[2])
-    elif firstChar == "p":
-        resp = r.decode(FORMAT)
-        resp = receiveJSON(resp[1:])
-        for i in (0, len(resp)-1):
-            pinNumber = outPins[i]
-            pinValue = resp[i]
-            machine.Pin(pinNumber, machine.Pin.OUT).value(not pinValue)
-    else:
-        #print(r)
-        data = bytearray(r)
-        #print(len(data))
-        fbuf = framebuf.FrameBuffer(data, 128, 64, framebuf.MONO_HLSB)
-        #oled.invert(1)
-        oled.fill(0)
-        oled.blit(fbuf,0,0)
+    resp = recv_msg(client)
+    
+    for i in (0, len(outPins)-1):
+        pinNumber = outPins[i]
+        pinValue = resp[i]
+        Pin(pinNumber, Pin.OUT).value(not pinValue)
+
+    screen = resp[i+1:]
+    
+    fbuf = FrameBuffer(screen, 128, 64, MONO_VLSB)
+    oled.blit(fbuf, 0, 0)
     
     oled.rotate(True)
     oled.show()
-    sleep(0.01)
+    sleep(0.05)
 
 send(DISCONNECT_MESSAGE)
