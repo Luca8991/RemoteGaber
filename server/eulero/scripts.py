@@ -2,6 +2,8 @@ import json
 import datetime
 import math
 
+from PIL import Image #python3 -m pip install Pillow
+
 def drawLine(cx, cy, r, angle):
     
     sx = cx
@@ -38,7 +40,7 @@ def time(memory, screenBf, pinState):
     screenBf.circle(cx, cy, r, True)
     screenBf.circle(cx, cy, r-1, True)
 
-    sx, sy = drawLine(cx, cy, r, s)
+    sx, sy = drawLine(cx, cy, r-1, s)
     screenBf.line(cx, cy, sx, sy, True)
 
     mx, my = drawLine(cx, cy, r-6, m)
@@ -73,6 +75,8 @@ def up(memory, screenBf, pinState):
 def down(memory, screenBf, pinState):
     screenBf.fill(0)
     screenBf.text("COUNTER", 24, 24, True, size=2)
+    '''image = Image.open('./scatman.1.pbm').convert('1')
+    screenBf.image(image)'''
 
 def showCount(count, screenBf):
     screenBf.fill(0)
@@ -84,7 +88,7 @@ def showCount(count, screenBf):
         x = 59
     elif count < 0 and count > -10:
         x = 54
-    elif count > 10 :
+    elif count >= 10 :
         x = 54
     elif count < -10:
         x = 49

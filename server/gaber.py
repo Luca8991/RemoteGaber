@@ -1,7 +1,10 @@
 import json
 import sys
 import importlib
-import adafruit_framebuf
+
+#pip3 install adafruit-circuitpython-framebuf
+# docs: https://circuitpython.readthedocs.io/projects/framebuf/en/latest/api.html
+import adafruit_framebuf 
 
 class Gaber:
     def __init__(self):
