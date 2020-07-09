@@ -75,8 +75,10 @@ def up(memory, screenBf, pinState):
 def down(memory, screenBf, pinState):
     screenBf.fill(0)
     screenBf.text("COUNTER", 24, 24, True, size=2)
-    '''image = Image.open('./scatman.1.pbm').convert('1')
-    screenBf.image(image)'''
+
+def scatmanImage(memory, screenBf, pinState):
+    image = Image.open('./scatman.1.pbm').convert('1')
+    screenBf.image(image)
 
 def showCount(count, screenBf):
     screenBf.fill(0)

@@ -33,6 +33,10 @@
                     "action": "BACK"
                 },
                 {
+                    "current": "scatman",
+                    "action": "BACK"
+                },
+                {
                     "current": "torch",
                     "action": "torchOn"
                 },
@@ -62,6 +66,14 @@
                     "action": "counterDown"
                 },
                 {
+                    "current": "day",
+                    "action": "scatman"
+                },
+                {
+                    "current": "scatman",
+                    "action": "BACK"
+                },
+                {
                     "default": "down"
                 }
             ]
@@ -78,6 +90,11 @@
             "mode": "script",
             "type": "save-state",
             "do": "day"
+        },
+        "scatman": {
+            "mode": "script",
+            "type": "change-state",
+            "do": "scatmanImage"
         },
         "torch":{
             "mode": "script",
